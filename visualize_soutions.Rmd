@@ -2,7 +2,8 @@
 title: "visualize_soutions"
 output: html_document
 ---
-```{r}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 ```
 

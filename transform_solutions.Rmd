@@ -1,0 +1,66 @@
+---
+title: "transform_solutions"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(nycflights13)
+library(ggplot2)
+```
+
+# 4.2.4
+### Find all flights that
+#### Had an arrival delay of two or more hours.
+```{r}
+filter(flights, arr_delay>120)
+```
+
+#### Flew to Houston (`IAH` or `HOU`)
+```{r}
+filter(flights, dest %in% c('IAH', 'HOU'))
+```
+
+#### Were operated by United, American, or Delta
+```{r}
+filter(flights, carrier %in% c('UA', 'AA', 'DL'))
+```
+
+#### Departed in summer (July, August, and September)
+```{r}
+filter(flights, month <= 7, month <= 9)
+```
+
+#### Arrived more than two hours late, but didn't leave late
+```{r}
+filter(flights, arr_delay > 120, dep_delay <= 0)
+```
+
+#### Were delayed by at least an hour, but made up over 30 minutes in flight
+```{r}
+filter(flights, dep_delay >= 60, dep_delay-arr_delay > 30)
+```
+
+#### Departed between midnight and 6am (inclusive)
+```{r}
+filter(flights, dep_time <=600 | dep_time == 2400)
+```
+
+### Another useful dplyr filtering helper is `between()`. What does it do? Can you use it to simplify the code needed to answer the previous challenges?
+Between is a shorter, faster way of testing two inequalities at once: it tests if its first argument is greater than or equal to its second, and less than or equal to its third.
+```{r}
+filter(flights, between(month, 7, 9))
+filter(flights, !between(dep_time, 601, 2359))
+```
+
+### How many flights have a missing `dep_time`? What other variables are missing? What might these rows represent?
+```{r}
+summary(flights)
+```
+
+8255 flights have a missing `dep_time`, 8255 have a missing `dep_delay`, 8713 have a missing `arr_time`, 9430 have a missing `arr_delay`, and 9430 have a missing `air_time`. We can speculate that these are flights that failed to depart or arrive, since a flight that departs normally but is then rerouted will probably have a normally recorded departure but no similar record for it's arrival. However, these could also just be lost data about perfectly normal flights.
+
+### Why is `NA ^ 0` not missing? Why is `NA | TRUE` not missing? Why is `FALSE & NA` not missing? Can you figure out the general rule?  (`NA * 0` is a tricky counterexample!)
+`NA ^ 0` is 1 because anything to the power of 0 is 1, so though we didn't know the original value, we know it's zeroth power. Similarly with `FALSE & NA`. `NA * 0` could be argued to be because the NA could represent `Inf`, and `Inf * 0` is `NaN`, rather than `NA`. However, I suspect that these results are dictated as much by what answer is natural and quick and sensible in C as by mathematical corner cases.
+
