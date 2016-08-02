@@ -8,100 +8,103 @@ library(ggplot2)
 
 
 # 3.2.1
-## Run `ggplot(data = mpg)` what do you see?
+### Run `ggplot(data = mpg)` what do you see?
 ```{r}
 ggplot(data = mpg)
 ```
+
 A ggplot with no aesthetics just shows a grey square, since it produces a background with no graph on it.
 
-## What does the `drv` variable describe?  Read the help for `?mpg` to find out.
+### What does the `drv` variable describe?  Read the help for `?mpg` to find out.
 ```{r}
 ?mpg
 ```
 The variable `drv` says which wheels [drive](https://en.wikipedia.org/wiki/Drive_wheel) the vehicle.
 Typing `?<object>` into the command prompt gets you help on functions and other objects.
 
-## Make a scatterplot of `hwy` vs `cyl`.
+### Make a scatterplot of `hwy` vs `cyl`.
 ```{r}
 ggplot(mpg, aes(x=cyl, y=hwy)) + geom_point()
 ```
+
 `ggplot(mpg, aes(x=cyl, y=hwy))` sets up the plot: the data that it is based on, and what the axes represent. `geom_point` says that we want to plot a scatter plot on these axes.
 
-## What happens if you make a scatterplot of `class` vs `drv`. Why is the plot not useful?
+### What happens if you make a scatterplot of `class` vs `drv`. Why is the plot not useful?
 ```{r}
 ggplot(mpg, aes(x=class, y=drv)) + geom_point()
 ```
+
 Because both variables are categorical, the points overlap and so we only see if there were any variables with that combination of classes. `geom_scatter` or using the mapping `alpha = 0.01` are possible ways to remedy this.
 
 # 3.3.1
-## What's gone wrong with this code? Why are the points not blue?
+### What's gone wrong with this code? Why are the points not blue?
 The points are not blue because the "blue" is being interpreted as a vector (`c("blue")`) to map to an aesthetic, just like hwy or displ. To manually override a colour, the mapping could be placed outside the `aes`.
 ```{r}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
 ```
 
-## Which variables in `mpg` are categorical? Which variables are continuous? 
+### Which variables in `mpg` are categorical? Which variables are continuous? 
 `mpg` is a tibble, so if you just run `mpg`, you can see the types of the variables as column headers. (As long as you have `dplyr` loaded)
 
-## Map a continuous variable to `color`, `size`, and `shape`. How do these aesthetics behave differently for categorical vs. continuous variables? 
+### Map a continuous variable to `color`, `size`, and `shape`. How do these aesthetics behave differently for categorical vs. continuous variables? 
 - `shape` can't take a continuous variable, because shapes aren't ordered.
 - `size` maps the variable to the area of the mark `scale_radius` can be used to map to the radius.
 - `colour` maps the variable to the saturation of the colour of a blue mark. Other mappings can be achieved with `scale_color_continuous`
 
-## What happens if you map the same variable across multiple aesthetics? What happens if you map different variables across multiple aesthetics?
+### What happens if you map the same variable across multiple aesthetics? What happens if you map different variables across multiple aesthetics?
 - You can represent a variable with multiple aesthetics with no trouble. For instance, using both `shape` and `colour` for one discrete variable means that your plot will still be readable in black and white.
 - If you try to use the same aesthetic multiple times, ggplot will take your first answer, with a warning.
 
-## What does the `stroke` aesthetic do? What shapes does it work with?
+### What does the `stroke` aesthetic do? What shapes does it work with?
 Stroke controls the width of the border, for shapes that have one.
 ```{r}
 ggplot(data = mpg) + geom_point(aes(x = cty, y = hwy, stroke = displ), shape = 21)
 ```
 
-## What happens if you set an aesthetic to something other than a variable name, like `displ < 5`?
+### What happens if you set an aesthetic to something other than a variable name, like `displ < 5`?
 Aesthetic mappings are treated as expressions to be evaluated in the context of the `data` argument, so this will evaluate the expression, and plot the result.
 ```{r}
 ggplot(data = mpg) + geom_point(aes(x = cty, y = hwy, colour = displ < 5))
 ```
 
 # 3.5.1
-## What happens if you facet on a continuous variable?
+### What happens if you facet on a continuous variable?
 You'll get one row or column for each unique value of the variable. This can very very slow for variables that take a lot of values.
 
-## What do the empty cells in plot with `facet_grid(drv ~ cyl)` mean?
+### What do the empty cells in plot with `facet_grid(drv ~ cyl)` mean?
 Empty cells in `facet_grid` imply that there were no rows with that combination of values in the original dataset. This is just like in a discrete vs discrete scatter plot, where empty rows or columns imply that that combination of values didn't occur in the original data set.
 
-## What plots does the following code make? What does `.` do?
+### What plots does the following code make? What does `.` do?
 `.` is just a placeholder so that we can have a facet in only one dimension. 
 This is necessary because sometimes one sided formulae can cause problems.
 
-## What are the advantages to using faceting instead of the colour aesthetic? What are the disadvantages? How might the balance change if you had a larger dataset?
+### What are the advantages to using faceting instead of the colour aesthetic? What are the disadvantages? How might the balance change if you had a larger dataset?
 It is difficult to resolve more than a dozen or so discrete colours, but we can have a larger number of facets than that. On the other hand, facets can be harder to read at a glance, or if the cells being compared aren't lined up in the required dimension. So in a situation like this, colours are probably better, but if we had more classes, or wanted to use colour for a different variable, facets would come into their own.
 
-## Read `?facet_wrap`. What does `nrow` do? What does `ncol` do? What other options control the layout of the individual panels? Why doesn't `facet_grid()` have `nrow` and `ncol` variables?
+### Read `?facet_wrap`. What does `nrow` do? What does `ncol` do? What other options control the layout of the individual panels? Why doesn't `facet_grid()` have `nrow` and `ncol` variables?
 In `facet_wrap`, `nrow` and `ncol` control the numbers of rows and columns, but in `facet_grid` these are implied by the faceting variables. `dir` also controls the placement of the individual panels, and so isn't an argument of `facet_grid`.
 
-## When using `facet_grid()` you should usually put the variable with more unique levels in the columns. Why?
+### When using `facet_grid()` you should usually put the variable with more unique levels in the columns. Why?
 Most screens are wider than they are tall.
 
 # 3.6.1
-## What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?
+### What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?
 Assuming that this means a line chart like that produced by `geom_line` (as opposed to vertical lines line a zero-width bar chart), then the closest analogy is something like this:
 ```{r}
 ggplot(mtcars, aes(x=qsec, y=mpg)) + geom_area(position = 'identity', alpha=0, colour='black')
 ```
 
-## Run this code in your head and predict what the output will look like.
+### Run this code in your head and predict what the output will look like.
 This plot shows that four wheel drive cars generally have somewhat worse highway fuel consumption than two wheel drives, and that higher engine displacement is generally associated with worse fuel consumption. However, there are several possible confounding variables: both four wheel drive and large displacement are generally associated with large mass and body size, and four wheel drives often have more frontal area than very similar two wheel drives. This means that this plot doesn't tell us the causal effect of driven wheels and displacement on fuel consumption.
 
-## What does the `se` argument to `geom_smooth()` do?
+### What does the `se` argument to `geom_smooth()` do?
 `se` specifies whether to add a translucent background showing the confidence interval.
 
-## Will these two graphs look different? Why/why not?
+### Will these two graphs look different? Why/why not?
 They look the same. It doesn't matter whether `data` and `mapping` are specified in the inital `ggplot()` or in the `geom`.
 
-## Recreate the R code necessary to generate the following graphs.
+### Recreate the R code necessary to generate the following graphs.
 ```{r}
 base1 <- ggplot(data = mpg, mapping = aes(x = displ, y = hwy, group=drv))
 base1 + geom_point() + geom_smooth(se = FALSE)
@@ -114,14 +117,14 @@ base2 + geom_point(size = 4, colour = "white") + geom_point(aes(colour = drv))
 ```
 
 # 3.7.1
-## In our proportion barchart, we need to set group = 1. Why? In other words, why is this graph not useful?
+### In our proportion barchart, we need to set group = 1. Why? In other words, why is this graph not useful?
 `..prop..` finds proportions of the groups in the data. If we don't specify that we want all the data to be regarded as one group, then `geom_barchart` we end up with each cut as a separate group, and if we find the proprtion of "Premium" diamonds that are "Premium", the answer is obviously 1.
 
-## How do you find out the default stat associated with a geom?
+### How do you find out the default stat associated with a geom?
 We can see the default state for `geom_point` by calling `?geom_point` to see the help page, or just `geom_point` to see the function definition.
 
 # 3.8.1
-## What is the problem with this plot? How could you improve it?
+### What is the problem with this plot? How could you improve it?
 Because mpg figures are rounded, both cty and hwy are relatively small integers. 
 This means that some of the points overlap and hide each other. 
 Options for dealing with this include using `position_jitter`, making the points transparent, and adding a line.
@@ -129,10 +132,10 @@ Options for dealing with this include using `position_jitter`, making the points
 ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + geom_point(position = 'jitter', alpha=0.5) + geom_smooth(method='lm')
 ```
 
-## Compare and contrast `geom_jitter()` with `geom_count()`.
+### Compare and contrast `geom_jitter()` with `geom_count()`.
 `geom_jitter` randomly moves the points to stop them overlapping. `geom_count` deterministically counts the points at a given point and maps them to the size of a single point. The determinism of `geom_count` makes it useful in discrete situations, but it does not work when the points are overlapping but not in exactly the same place.
 
-## What's the default position adjustment for `geom_boxplot()`? Create a visualisation of the `mpg` dataset that demonstrates it.
+### What's the default position adjustment for `geom_boxplot()`? Create a visualisation of the `mpg` dataset that demonstrates it.
 The default adjustment is `position_dodge`. This means that the points are moved to the side by a discrete amount
 ```{r}
 base <- ggplot(data = mpg, mapping = aes(x=drv, y=cty, fill=as.factor(cyl))) 
@@ -143,15 +146,15 @@ base + geom_boxplot(position='jitter') # looks terrible, and unreadable
 ```
 
 # 3.9.1
-## Turn a stacked bar chart into a pie chart using `coord_polar()`.
+### Turn a stacked bar chart into a pie chart using `coord_polar()`.
 Can't work this one out
 
-## What does `labs()` do? Read the documentation.
+### What does `labs()` do? Read the documentation.
 Changes labels on legends and axes.
 
-## What's the difference between `coord_quickmap()` and `coord_map()`?
+### What's the difference between `coord_quickmap()` and `coord_map()`?
 `coord_quickmap` uses an approximation to the mercator projection, whereas `coord_map` can use a variety of projections from the `mapproj` package.
 This means that `coord_quickmap` runs faster and doesn't require additional packages, but isn't as accurate, and won't work right far from the equator.
 
-## What does the plot below tell you about the relationship between city and highway mpg? Why is `coord_fixed()` important? What does `geom_abline()` do?
+### What does the plot below tell you about the relationship between city and highway mpg? Why is `coord_fixed()` important? What does `geom_abline()` do?
 `geom_abline` is used to plot lines defined by slope (a) and intercept (b) parameters. Used with no arguments, like here, it will plot a line with slope 1 and intercept 0, so passing through the origin at 45 degrees. `coord_fixed` is important because x and y have the same units, so we want to maintain the slope of the line, and see that city mileage is worse than highway, but more importantly that this is better explained by a constant offset than a multiplicative factor.
