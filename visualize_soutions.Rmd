@@ -93,7 +93,8 @@ Most screens are wider than they are tall.
 ### What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?
 Assuming that this means a line chart like that produced by `geom_line` (as opposed to vertical lines line a zero-width bar chart), then the closest analogy is something like this:
 ```{r}
-ggplot(mtcars, aes(x=qsec, y=mpg)) + geom_area(position = 'identity', alpha=0, colour='black')
+ggplot(mtcars, aes(x=qsec, y=mpg)) + 
+  geom_area(position = 'identity', alpha=0, colour='black') + coord_cartesian(xlim=c(min(mtcars$qsec)*1.1,max(mtcars$qsec)*0.9), ylim=c(2, max(mtcars$mpg)))
 ```
 
 ### Run this code in your head and predict what the output will look like.
@@ -142,13 +143,26 @@ The default adjustment is `position_dodge`. This means that the points are moved
 base <- ggplot(data = mpg, mapping = aes(x=drv, y=cty, fill=as.factor(cyl))) 
 base + geom_boxplot() # looks right
 base + geom_boxplot(position='dodge') # the same
-base + geom_boxplot(position='identity') # unreable
+base + geom_boxplot(position='identity') # unreadable
 base + geom_boxplot(position='jitter') # looks terrible, and unreadable
 ```
 
 # 3.9.1
 ### Turn a stacked bar chart into a pie chart using `coord_polar()`.
 Can't work this one out
+```{r}
+# produces a stacked bar chart
+ggplot(mpg, aes(x = 1, fill=factor(drv))) + 
+  geom_bar(width=1, stat='count') 
+
+# produces the equivalent pie chart
+ggplot(mpg, aes(x = 1, fill=factor(drv))) + 
+  geom_bar(width=1, stat='count') +
+  coord_polar(theta='y')
+```
+This is not a good idea to use:
+- Forcing a bar chart with one column is untidy.
+- Using `theta='y'` to force the polar plot to use the implicit `y` variable created by `geom_bar`'s `stat_count` is confusing and hacky.
 
 ### What does `labs()` do? Read the documentation.
 Changes labels on legends and axes.
