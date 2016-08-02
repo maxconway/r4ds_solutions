@@ -113,6 +113,13 @@ base2 + geom_point(aes(colour = drv)) + geom_smooth(aes(linetype=drv), se=FALSE)
 base2 + geom_point(size = 4, colour = "white") + geom_point(aes(colour = drv))
 ```
 
+# 3.7.1
+## In our proportion barchart, we need to set group = 1. Why? In other words, why is this graph not useful?
+`..prop..` finds proportions of the groups in the data. If we don't specify that we want all the data to be regarded as one group, then `geom_barchart` we end up with each cut as a separate group, and if we find the proprtion of "Premium" diamonds that are "Premium", the answer is obviously 1.
+
+## How do you find out the default stat associated with a geom?
+We can see the default state for `geom_point` by calling `?geom_point` to see the help page, or just `geom_point` to see the function definition.
+
 # 3.8.1
 ## What is the problem with this plot? How could you improve it?
 Because mpg figures are rounded, both cty and hwy are relatively small integers. 
