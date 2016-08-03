@@ -123,11 +123,43 @@ arrange(flights, distance) %>% select(1:5, distance)
 ```
 
 # 4.4.1
-### 1. How could you use arrange() to sort all missing values to the start? (Hint: use is.na()).
+### 1. Brainstorm as many ways as possible to select `dep_time`, `dep_delay`, `arr_time`, and `arr_delay` from flights.
 ```{r}
-df <- tibble(x = c(5, 2, NA))
-arrange(df, desc(is.na(x)))
-arrange(df, -(is.na(x)))
+# standard ways
+select(flights, dep_time,  dep_delay, arr_time, arr_delay)
+select(flights, c(dep_time,  dep_delay, arr_time, arr_delay))
+flights %>% select(dep_time,  dep_delay, arr_time, arr_delay)
+flights %>% select_("dep_time",  "dep_delay", "arr_time", "arr_delay")
 
+# fancier ways
+flights %>% select(dep_time:arr_delay, -c(contains("sched")))
+flights %>% select(ends_with("time"),  ends_with("delay")) %>% select(-c(starts_with("sched"), starts_with("air")))
+flights %>% select(contains("dep"), contains("arr"), -contains("sched"), -carrier)
+flights %>% select(matches("^dep|arr_delay|time$"))
+flights %>% select(matches("^dep|^arr"))
+flights %>% select(matches("^dep|^arr.*time$|delay$"))
+flights %>% select(matches("^dep|^arr_time$|delay$"))
+
+head(flights)
 ```
+### 2. What happens if you include the name of a variable multiple times in a select() call?
+```{r}
+flights %>% select(dep_delay, dep_delay, dep_delay)
+```
+Nothing happens, you just get the variable once.
+
+### 3. What does the one_of() function do? Why might it be helpful in conjunction with this vector?
+It returns all the variables you ask for, for example ones stored in a vector.
+```{r}
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+flights %>% select(one_of(vars))
+```
+
+### 4. Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?
+```{r}
+select(flights, contains("TIME"))
+select(flights, contains("TIME", ignore.case = FALSE))
+```
+The default helper functions are insensitive to case. This can be changes by setting `ignore.case=FALSE`.
+
 
