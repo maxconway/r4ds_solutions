@@ -12,7 +12,7 @@ library(ggplot2)
 # look at flights data
 flights 
 
-# 4.2.4
+# 4.2.4 Exercises
 ### 1. Find all flights that
 #### 1.1. Had an arrival delay of two or more hours.
 ```{r}
@@ -77,8 +77,8 @@ For the next example, we know that `&` returns TRUE when both terms are true. So
 `NA * 0` could be argued to be because the NA could represent `Inf`, and `Inf * 0` is `NaN` (Not a Number), rather than `NA`. However, I suspect that these results are dictated as much by what answer is natural, quick and sensible in C as by mathematical edge cases.
 
 
-# 4.3.1
-### 1. How could you use arrange() to sort all missing values to the start? (Hint: use is.na()).
+# 4.3.1 Exercises
+### 1. How could you use `arrange()` to sort all missing values to the start? (Hint: use `is.na()`).
 ```{r}
 df <- tibble(x = c(5, 2, NA))
 arrange(df, desc(is.na(x)))
@@ -122,7 +122,7 @@ arrange(flights, distance) %>% select(1:5, distance)
 
 ```
 
-# 4.4.1
+# 4.4.1 Exercises
 ### 1. Brainstorm as many ways as possible to select `dep_time`, `dep_delay`, `arr_time`, and `arr_delay` from flights.
 ```{r}
 # standard ways
@@ -142,13 +142,14 @@ flights %>% select(matches("^dep|^arr_time$|delay$"))
 
 head(flights)
 ```
-### 2. What happens if you include the name of a variable multiple times in a select() call?
+
+### 2. What happens if you include the name of a variable multiple times in a `select()` call?
 ```{r}
 flights %>% select(dep_delay, dep_delay, dep_delay)
 ```
 Nothing happens, you just get the variable once.
 
-### 3. What does the one_of() function do? Why might it be helpful in conjunction with this vector?
+### 3. What does the `one_of()` function do? Why might it be helpful in conjunction with this vector?
 It returns all the variables you ask for, for example ones stored in a vector.
 ```{r}
 vars <- c("year", "month", "day", "dep_delay", "arr_delay")
@@ -162,4 +163,132 @@ select(flights, contains("TIME", ignore.case = FALSE))
 ```
 The default helper functions are insensitive to case. This can be changes by setting `ignore.case=FALSE`.
 
+
+# 4.5.2 Exercises
+### 1. Currently `dep_time` and `sched_dep_time` are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
+```{r}
+
+
+```
+
+### 2. Compare airtime with `arr_time` - `dep_time`. What do you expect to see? What do you see? What do you need to do to fix it?
+```{r}
+
+
+```
+
+### 3. Compare `dep_time`, `sched_dep_time`, and `dep_delay`. How would you expect those three numbers to be related?
+```{r}
+
+
+```
+
+### 4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().
+```{r}
+
+
+```
+
+### 5. What does 1:3 + 1:10 return? Why?
+```{r}
+
+
+```
+
+### 6. What trigonometric functions does R provide?
+```{r}
+
+
+```
+
+
+# 4.5.2 Exercises
+### 1. Currently `dep_time` and `sched_dep_time` are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
+```{r}
+
+
+```
+
+
+# 4.6.7 Exercises
+### 1. Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights. Consider the following scenarios:
+# A flight is 15 minutes early 50% of the time, and 15 minutes late 50% of the time.
+# A flight is always 10 minutes late.
+# A flight is 30 minutes early 50% of the time, and 30 minutes late 50% of the time.
+# 99% of the time a flight is on time. 1% of the time it’s 2 hours late.
+# Which is more important: arrival delay or departure delay?
+```{r}
+
+
+```
+
+### 2. Come up with another appraoch that will give you the same output as `not_cancelled %>% count(dest)` and `not_cancelled %>% count(tailnum, wt = distance)` (without using `count()`).
+```{r}
+
+
+```
+
+### 3. Our definition of cancelled flights (`!is.na(dep_delay) & !is.na(arr_delay)`) is slightly suboptimal. Why? Which is the most important column?
+```{r}
+
+
+```
+
+### 4. Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?
+```{r}
+
+
+```
+
+### 5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about `flights %>% group_by(carrier, dest) %>% summarise(n())`)
+```{r}
+
+
+```
+
+### 6. For each plane, count the number of flights before the first delay of greater than 1 hour.
+```{r}
+
+
+```
+
+### 7. What does the sort argument to count() do. When might you use it?
+```{r}
+
+
+```
+
+
+# 4.7.1 Exercises
+### 1. Refer back to the table of useful mutate and filtering functions. Describe how each operation changes when you combine it with grouping.
+
+# 2. Which plane (tailnum) has the worst on-time record?
+```{r}
+
+
+```
+
+# 3. What time of day should you fly if you want to avoid delays as much as possible?
+```{r}
+
+
+```
+
+# 4. Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using `lag()` explore how the delay of a flight is related to the delay of the immediately preceding flight.
+```{r}
+
+
+```
+
+# 5. Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?
+```{r}
+
+
+```
+
+# 6. Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
+```{r}
+
+
+```
 
