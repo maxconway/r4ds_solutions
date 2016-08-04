@@ -217,17 +217,9 @@ flights %>% top_n(n = 10, wt = dep_delay)
 
 ### 6. What trigonometric functions does R provide?
 ```{r}
-
-
+?Trig
 ```
-
-
-# 4.5.2 Exercises
-### 1. Currently `dep_time` and `sched_dep_time` are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
-```{r}
-
-
-```
+Using `?Trig`, we can find a list of trigonometric functions provided by base R. Examples include `cos(x)`, `acos(x)`, `cospi(x)`.
 
 
 # 4.6.7 Exercises
