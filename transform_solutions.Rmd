@@ -229,10 +229,30 @@ Using `?Trig`, we can find a list of trigonometric functions provided by base R.
 # A flight is 30 minutes early 50% of the time, and 30 minutes late 50% of the time.
 # 99% of the time a flight is on time. 1% of the time it’s 2 hours late.
 # Which is more important: arrival delay or departure delay?
-```{r}
 
+Assuming we are interested in *arrival* delays, we can calculate the following summary variables for all flights:
+
+```{r}
+str(flights)
+head(flights)
+flight_delay_summary <- group_by(flights, flight) %>% summarise(num_flights = n(),
+                                                                percentage_on_time = sum(arr_time == sched_arr_time)/num_flights,
+                                                                percentage_early = sum(arr_time < sched_arr_time)/num_flights, 
+                                                                percentage_15_mins_early = sum(sched_arr_time - arr_time == 15)/num_flights,
+                                                                percentage_late = sum(arr_time > sched_arr_time)/num_flights,
+                                                                percentage_15_mins_late = sum(arr_time - sched_arr_time == 15)/num_flights,
+                                                                percentage_2_hours_late = sum(arr_time - sched_arr_time == 120)/num_flights)
+flight_delay_summary
+```
+
+Using this, we can then answer the preceding questions, e.g. a flight that is 15 minutes early 50% of the time, and 15 minutes late 50% of the time can be found using:
+
+```{r}
+flight_delay_summary %>% filter(percentage_15_mins_early == 0.5 & percentage_15_mins_late == 0.5)
 
 ```
+
+As for whether arrival delay or departure delay is more important - from the individual perspective this may be a matter of personal taste, and from the business perspective we would need data on associated costs of both types of delay (monetary, customer satisfaction hits, etc.) to reason about relative importance.
 
 ### 2. Come up with another appraoch that will give you the same output as `not_cancelled %>% count(dest)` and `not_cancelled %>% count(tailnum, wt = distance)` (without using `count()`).
 ```{r}
