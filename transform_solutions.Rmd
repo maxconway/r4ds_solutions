@@ -10,7 +10,9 @@ library(nycflights13)
 library(ggplot2)
 ```
 # look at flights data
+```{r}
 flights 
+```
 
 # 4.2.4 Exercises
 ### 1. Find all flights that
@@ -299,6 +301,12 @@ We can see that on most days, there is not a strong relationship between cancell
 There are 16 carriers, 3 origin airports, and 105 destination airports in this dataset. For many destination airports, there are only one or two carriers that fly there, so it is difficult to tell how much of the delay is due to the carrier, and how much is due to the airport (busy destination airports can force planes to loiter longer before there is a free landing slot). We also can't necessarily tell how much of the delay is due to the route, versus the airport itself. This makes attributing the cause of in flight delays difficult.
 ```{r}
 flights %>%
+    filter(arr_delay > 0) %>%
+    group_by(carrier) %>%
+    summarise(average_arr_delay = mean(arr_delay, na.rm=TRUE)) %>%
+    arrange(desc(average_arr_delay))
+
+flights %>%
   summarise(n_distinct(carrier),
             n_distinct(origin),
             n_distinct(dest))
@@ -307,47 +315,78 @@ flights %>%
 
 ### 6. For each plane, count the number of flights before the first delay of greater than 1 hour.
 ```{r}
-
-
+flights %>%
+    mutate(dep_date = lubridate::make_datetime(year, month, day)) %>%
+    group_by(tailnum) %>%
+    arrange(dep_date) %>%
+    filter(!cumany(arr_delay>60)) %>%
+    tally(sort = TRUE)
 ```
 
 ### 7. What does the sort argument to count() do. When might you use it?
-```{r}
-
-
-```
+The `sort` argument to `count()` sorts by descending order of `n`. This is useful because often the most common group is the most important.
 
 
 # 4.7.1 Exercises
 ### 1. Refer back to the table of useful mutate and filtering functions. Describe how each operation changes when you combine it with grouping.
+Which one?
 
 # 2. Which plane (tailnum) has the worst on-time record?
 ```{r}
+flights %>%
+  group_by(tailnum) %>%
+  summarise(prop_on_time = sum(arr_delay <= 30 & !is.na(arr_delay))/n(),
+            mean_arr_delay = mean(arr_delay, na.rm=TRUE),
+            flights = n()) %>%
+  arrange(prop_on_time, desc(mean_arr_delay))
 
-
+flights %>%
+  group_by(tailnum) %>%
+  filter(all(is.na(arr_delay))) %>%
+    tally(sort=TRUE)
 ```
+
+Many of the planes have never arrived on time, and 7 have never arrived at all. These are planes for which we do not have much data, so there's no clear answer to the worst plane unless we limit ourselves to some arbitrary threshold of number of recorded flights.
 
 # 3. What time of day should you fly if you want to avoid delays as much as possible?
 ```{r}
-
-
+flights %>%
+    ggplot(aes(x=factor(hour), fill=arr_delay>5 | is.na(arr_delay))) + geom_bar()
 ```
+
+We can see that the highest probability of delay as a proportion of total flights is in the late evening. We could hypothesize that this is due to accumulated knockon delays during the day, the difficulties of flying at night, or these flights being typically longer distance.
 
 # 4. Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave. Using `lag()` explore how the delay of a flight is related to the delay of the immediately preceding flight.
 ```{r}
-
+flights %>%
+  mutate(new_sched_dep_time = lubridate::make_datetime(year, month, day, hour, minute)) %>%
+  group_by(origin) %>%
+  arrange(new_sched_dep_time) %>%
+  mutate(prev_flight_dep_delay = lag(dep_delay)) %>%
+  ggplot(aes(x=prev_flight_dep_delay, y= dep_delay)) + geom_point()
+  
 
 ```
 
 # 5. Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most delayed in the air?
 ```{r}
-
-
+flights %>%
+  mutate(new_sched_dep_time = lubridate::make_datetime(year, month, day, hour, minute)) %>%
+  group_by(origin) %>%
+  arrange(new_sched_dep_time) %>%
+  mutate(prev_flight_dep_delay = lag(dep_delay)) %>%
+  lm(dep_delay ~ prev_flight_dep_delay,.) %>% summary()
 ```
+
+We find that there is a weak correlation between the delays, but that due to the number of rows, we can be highly confident of a predictive relationship.
 
 # 6. Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
 ```{r}
-
-
+flights %>%
+  group_by(dest) %>%
+  filter(n_distinct(carrier)>=2) %>%
+  group_by(carrier) %>%
+  summarise(possible_transfers = n_distinct(dest)) %>%
+  arrange(desc(possible_transfers))
 ```
 
