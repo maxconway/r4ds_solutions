@@ -132,6 +132,7 @@ select(flights, dep_time,  dep_delay, arr_time, arr_delay)
 select(flights, c(dep_time,  dep_delay, arr_time, arr_delay))
 flights %>% select(dep_time,  dep_delay, arr_time, arr_delay)
 flights %>% select_("dep_time",  "dep_delay", "arr_time", "arr_delay")
+flights %>% select_(.dots=c("dep_time",  "dep_delay", "arr_time", "arr_delay"))
 
 # fancier ways
 flights %>% select(dep_time:arr_delay, -c(contains("sched")))
@@ -208,7 +209,7 @@ flights %>%
 ```
 
 ### 4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().
-There aren't actually any ties in the top 10 most delayed flights for departure and arrival, but if there had been a tie for 10th place, then min_rank could have produced more than 10 results. It is still the most honest method here, though, since it is better to produce a result that highlights a corner case like a tie than a result that hides it.
+There aren't actually any ties in the top 10 most delayed flights for departure and arrival, but if there had been a tie for 10th place, then min_rank could have produced more than 10 results. It is still the most honest method here, though, since it is better to produce a result that highlights a corner case like a tie than a result that hides it. 
 ```{r}
 filter(flights, min_rank(desc(dep_delay))<=10)
 flights %>% top_n(n = 10, wt = dep_delay)
@@ -232,7 +233,7 @@ Using `?Trig`, we can find a list of trigonometric functions provided by base R.
 # 99% of the time a flight is on time. 1% of the time it’s 2 hours late.
 # Which is more important: arrival delay or departure delay?
 
-Assuming we are interested in *arrival* delays, we can calculate the following summary variables for all flights:
+We're not clear what this question means. Assuming we are interested in *arrival* delays, we can calculate the following summary variables for all flights:
 
 ```{r}
 str(flights)

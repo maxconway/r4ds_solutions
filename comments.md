@@ -6,3 +6,6 @@
 - Modular arithmetic should be introduced later than it is. It is an important topic in general programming, but it is not a common function in data science. `ceiling`, `floor`, `trunc`, `round` and `signif` can achieve most or all of the same effects, and can be applied to floating point numbers
 
 - Converting timestamps to times is probably a bit involved for this point in the book, unless you want to give a feel for messy data
+
+- Not clear what delay means in chapter 4
+- modular arithmetic stuff can probably go

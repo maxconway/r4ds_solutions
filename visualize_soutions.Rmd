@@ -47,7 +47,7 @@ ggplot(data = mpg) +
 
 ### Which variables in `mpg` are categorical? Which variables are continuous? 
 `mpg` is a tibble, so if you just run `mpg`, you can see the types of the variables as column headers. (As long as you have `dplyr` loaded)
-
+geom
 ### Map a continuous variable to `color`, `size`, and `shape`. How do these aesthetics behave differently for categorical vs. continuous variables? 
 - `shape` can't take a continuous variable, because shapes aren't ordered.
 - `size` maps the variable to the area of the mark `scale_radius` can be used to map to the radius.
