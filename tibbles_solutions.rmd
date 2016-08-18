@@ -1,0 +1,75 @@
+# `Tibble` Exercises
+
+```{r}
+library(tibble)
+```
+
+## Exercise 1
+
+```{r}
+# load the data
+data(mtcars)
+
+is(mtcars)  # the type is data.frame
+
+mtcars %>% as_tibble()
+```
+
+## Exercise 2
+
+## Exercise 2.1
+
+```{r}
+library(ggplot2)
+
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+
+ggplot(data = annoying) +
+  geom_point(aes(x = `1`, y = `2`))
+```
+
+## Exercise 2.2
+
+```{r}
+annoying$`3` <- annoying$`2` / annoying$`1`
+annoying
+```
+
+## Exercise 2.4
+
+Has to be done before the renaming.
+
+```{r}
+annoying$`1`
+annoying
+```
+
+## Exercise 2.3
+
+```{r}
+colnames(annoying) <- c("one", "two", "three")
+annoying
+```
+
+## Exercise 3
+
+It is like a named vector that is converted into a data_frame/tibble. We might use it before we use `mutate`.
+
+```{r}
+v <- 1:10
+names(v) <- letters[v]
+
+d <- enframe(v)
+d
+```
+
+## Exercise 4
+
+In the example below `tibble.max_extra_cols` is set to `100` and defines how many additional column names are printed
+
+```{r}
+options(tibble.max_extra_cols = 100)
+```
