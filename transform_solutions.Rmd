@@ -35,9 +35,8 @@ filter(flights, carrier %in% c('UA', 'AA', 'DL'))
 
 #### 1.4. Departed in summer (July, August, and September)
 ```{r}
-filter(flights, month <= 7, month <= 9)
-filter(flights, month <= 7 & month <= 9)
-
+filter(flights, month >= 7 & month <= 9)
+filter(flights, month %in% c(7, 8, 9))
 ```
 
 #### 1.5. Arrived more than two hours late, but didn't leave late
