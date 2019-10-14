@@ -96,21 +96,8 @@ arrange(flights, dep_delay)
 
 ### 3. Sort flights to find the fastest flights.
 ```{r}
-# Note - this is a bit tricky since the time stamps are just encoded as integers
-# so if a flight left at midnight (i.e. dep_time=2400) and arrived at 00:54 (arr_time=54),
-# it's hard to just do arr_time - dep_time to get the travel time (you get back -2346, which doesn't make sense). 
-# Taking absolute values doesn't help either.
-# A workaround solution is just to add 2400 if the travel time is ever negative.
-# A better solution is to properly encode the times as timestamps
-# note: we use the `mutate` function and the pipe character `%>%`, which haven't been introduced yet
-
-flights %>% mutate(travel_time = ifelse((arr_time - dep_time < 0), 
-                                        2400+(arr_time - dep_time),
-                                        arr_time - dep_time)) %>% 
-  arrange(travel_time) %>% select(arr_time, dep_time, travel_time)
-
-# for demonstration purposes, the naive solution is
-arrange(flights, (arr_time - dep_time))
+# use the variable air_time, which gives amount of time spent in the air, in minutes.
+arrange(flights, air_time)
 
 ```
 
